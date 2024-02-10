@@ -3,12 +3,12 @@ import json
 import math
 
 
-def run1():
-    model = whisper.load_model("base")
-    result = model.transcribe("outt.mp4")
+def run1(model_name: str, file_path: str, result_path: str):
+    model = whisper.load_model(model_name)
+    result = model.transcribe(file_path)
 
     pretty = json.dumps(result, indent=2)
-    with open("result.json", "wb") as file:
+    with open(result_path, "wb") as file:
         file.write(pretty.encode("utf-8"))
 
 
@@ -25,18 +25,18 @@ def conv(seg):
     }
 
 
-def run2():
-    with open("result.json", "r") as file:
+def run2(src_path: str, result_path: str):
+    with open(src_path, "r") as file:
         json_str = file.read()
 
     obj = json.loads(json_str)
     result = [conv(seg) for seg in obj["segments"]]
 
     pretty = json.dumps(result, indent=2)
-    with open("result2.json", "wb") as file:
+    with open(result_path, "wb") as file:
         file.write(pretty.encode("utf-8"))
 
 
 if __name__ == "__main__":
-    # run1()
-    run2()
+    # run1("base", "outt.mp4", "result.json")
+    run2("result.json", "result2.json")
