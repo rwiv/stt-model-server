@@ -1,5 +1,6 @@
 import whisper
 import json
+import math
 
 
 def run1():
@@ -11,11 +12,15 @@ def run1():
         file.write(pretty.encode("utf-8"))
 
 
+def conv_ms(sec):
+    return math.floor(sec * 1000)
+
+
 def conv(seg):
     return {
         "id": seg["id"],
-        "start": seg["start"],
-        "end": seg["end"],
+        "start": conv_ms(seg["start"]),
+        "end": conv_ms(seg["end"]),
         "text": seg["text"],
     }
 
@@ -26,8 +31,6 @@ def run2():
 
     obj = json.loads(json_str)
     result = [conv(seg) for seg in obj["segments"]]
-    for seg in result:
-        print(seg)
 
     pretty = json.dumps(result, indent=2)
     with open("result2.json", "wb") as file:
@@ -35,5 +38,5 @@ def run2():
 
 
 if __name__ == "__main__":
-    run1()
-    # run2()
+    # run1()
+    run2()
