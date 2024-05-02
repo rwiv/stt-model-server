@@ -3,40 +3,39 @@ import json
 import math
 
 
-def run1(model_name: str, file_path: str, result_path: str):
+def run(model_name: str, file_path: str):
     model = whisper.load_model(model_name)
     result = model.transcribe(file_path)
+    result2 = [conv(seg) for seg in result["segments"]]
 
-    pretty = json.dumps(result, indent=2)
-    with open(result_path, "wb") as file:
-        file.write(pretty.encode("utf-8"))
-
-
-def conv_ms(sec):
-    return math.floor(sec * 1000)
+    return result2
 
 
 def conv(seg):
     return {
         "id": seg["id"],
-        "start": conv_ms(seg["start"]),
-        "end": conv_ms(seg["end"]),
+        "start": math.floor(seg["start"] * 1000),
+        "end": math.floor(seg["end"] * 1000),
         "text": seg["text"],
     }
 
 
-def run2(src_path: str, result_path: str):
-    with open(src_path, "r") as file:
+def read_json(path: str):
+    with open(path, "r") as file:
         json_str = file.read()
+    return json_str
 
-    obj = json.loads(json_str)
-    result = [conv(seg) for seg in obj["segments"]]
 
-    pretty = json.dumps(result, indent=2)
+def to_pretty_json(json_str: str, result_path: str):
+    pretty = json.dumps(json_str, indent=2)
     with open(result_path, "wb") as file:
         file.write(pretty.encode("utf-8"))
 
 
 if __name__ == "__main__":
-    # run1("base", "outt.mp4", "result.json")
-    run2("result.json", "result2.json")
+    model_name = "base"
+    # model_name = "medium"
+    result = run(model_name, "test1.mp3")
+    for elem in result:
+        print(elem)
+
