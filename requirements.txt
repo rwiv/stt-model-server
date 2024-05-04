@@ -22,6 +22,7 @@ numba==0.59.1
 numpy==1.26.4
 openai-whisper==20231117
 packaging==24.0
+pillow==10.2.0
 pluggy==1.5.0
 pydantic==2.7.1
 pydantic_core==2.18.2
@@ -33,7 +34,9 @@ starlette==0.37.2
 sympy==1.12
 tbb==2021.12.0
 tiktoken==0.6.0
-torch==2.3.0
+torch==2.3.0+cu121
+torchaudio==2.3.0+cu121
+torchvision==0.18.0+cu121
 tqdm==4.66.2
 typing_extensions==4.11.0
 urllib3==2.2.1
