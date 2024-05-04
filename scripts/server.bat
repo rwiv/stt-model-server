@@ -1,2 +1,2 @@
-cd ..\sttserver
-..\.venv\Scripts\uvicorn main:app --reload --port=8080
+cd ..
+.\.venv\Scripts\python.exe .\main.py
