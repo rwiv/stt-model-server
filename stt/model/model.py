@@ -2,6 +2,7 @@ import math
 from typing import BinaryIO, TypedDict
 from faster_whisper import WhisperModel
 from faster_whisper.transcribe import Segment as WhisperSegment
+from numpy import ndarray
 
 
 class Segment(TypedDict):
@@ -19,7 +20,7 @@ class SttModel:
         self.model = WhisperModel(model_name, device=device, compute_type=compute_type)
         print("whisper model load complete")
 
-    def transcribe(self, file: BinaryIO) -> list[Segment]:
+    def transcribe(self, file: str | BinaryIO | ndarray) -> list[Segment]:
         segments, info = self.model.transcribe(file, beam_size=5)
         # print(info)
         return [conv(seg) for seg in segments]

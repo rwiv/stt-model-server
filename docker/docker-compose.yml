@@ -1,0 +1,24 @@
+services:
+  streaming-server:
+    image: stt-model-server
+    container_name: stt-model-server
+    working_dir: /usr/src/app
+#    entrypoint: py --version
+    entrypoint: sleep 1000000000
+#    entrypoint: .venv/bin/python3 main.py
+#    entrypoint: .venv/bin/python3 test.py
+    ports:
+      - "8080:8080"
+    volumes:
+#      - ..:/usr/src/app
+      - ../stt:/usr/src/app/stt
+      - ../init.py:/usr/src/app/init.py
+      - ../test.py:/usr/src/app/test.py
+      - ../assets:/usr/src/app/assets
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
