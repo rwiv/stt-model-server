@@ -6,6 +6,7 @@ from stt.sbt.vtt import to_vtt_string
 
 
 def run():
+    print("Starting job")
     env = get_env()
     model = SttModel(env.model_type, env.compute_type)
     print("Model loaded")

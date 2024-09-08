@@ -6,7 +6,7 @@ services:
       PY_ENV: prod
       APP_PORT: "8080"
       APP_HOST: 0.0.0.0
-      APP_MODEL_TYPE: large-v3
+      APP_MODEL_TYPE: large-v2
       APP_COMPUTE_TYPE: int8
       APP_SRC_PATH: /mnt/volume/src
       APP_DST_PATH: /mnt/volume/out
