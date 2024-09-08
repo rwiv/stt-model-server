@@ -7,6 +7,12 @@ from numpy import ndarray
 from stt.utils.logger import log
 
 
+device = "cuda"
+beam_size = 5
+word_timestamps = True
+vad_filter = True
+
+
 @dataclass
 class Segment:
     start: int
@@ -16,12 +22,15 @@ class Segment:
 
 class SttModel:
     def __init__(self, model_size: str, compute_type: str):
-        device = "cuda"
-        self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
+        self.model = WhisperModel(
+            model_size, device=device, compute_type=compute_type
+        )
         log.info(f"Model loaded: {model_size}")
 
     def transcribe(self, file: str | BinaryIO | ndarray) -> list[Segment]:
-        segments, info = self.model.transcribe(file, beam_size=5, word_timestamps=True)
+        segments, info = self.model.transcribe(
+            file, beam_size=beam_size, word_timestamps=word_timestamps, vad_filter=vad_filter,
+        )
         words = []
         for seg in segments:
             for word in seg.words:
