@@ -11,7 +11,6 @@ from stt.utils.logger import log
 device = "cuda"
 beam_size = 5
 word_timestamps = True
-vad_filter = True
 
 
 @dataclass
@@ -39,7 +38,7 @@ class SttModel:
 
     def transcribe(self, file: str | BinaryIO | ndarray, is_split=True) -> list[Sentence]:
         segments, info = self.model.transcribe(
-            file, beam_size=beam_size, word_timestamps=word_timestamps, vad_filter=vad_filter,
+            file, beam_size=beam_size, word_timestamps=word_timestamps,
         )
         if is_split:
             return split_by_word(segments)
