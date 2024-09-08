@@ -4,7 +4,7 @@ services:
     container_name: stt-model-server
     environment:
       PY_ENV: prod
-      MODEL_SIZE: large-v2
+      MODEL_SIZE: large-v3
       MODEL_COMPUTE_TYPE: int8
       APP_PORT: "8080"
       APP_HOST: 0.0.0.0

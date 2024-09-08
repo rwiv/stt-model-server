@@ -1,7 +1,8 @@
 import math
 from dataclasses import dataclass
-from typing import BinaryIO
+from typing import BinaryIO, Iterable
 from faster_whisper import WhisperModel
+from faster_whisper.transcribe import Segment
 from numpy import ndarray
 
 from stt.utils.logger import log
@@ -14,10 +15,19 @@ vad_filter = True
 
 
 @dataclass
-class Segment:
+class Sentence:
     start: int
     end: int
     text: str
+
+
+@dataclass
+class Word:
+    start: int
+    end: int
+    text: str
+    is_first: bool
+    is_last: bool
 
 
 class SttModel:
@@ -27,36 +37,57 @@ class SttModel:
         )
         log.info(f"Model loaded: {model_size}")
 
-    def transcribe(self, file: str | BinaryIO | ndarray) -> list[Segment]:
+    def transcribe(self, file: str | BinaryIO | ndarray, is_split=True) -> list[Sentence]:
         segments, info = self.model.transcribe(
             file, beam_size=beam_size, word_timestamps=word_timestamps, vad_filter=vad_filter,
         )
-        words = []
-        for seg in segments:
-            for word in seg.words:
-                words.append(Segment(
-                    start=math.floor(word.start * 1000),
-                    end=math.floor(word.end * 1000),
-                    text=word.word,
+        if is_split:
+            return split_by_word(segments)
+        else:
+            result = []
+            for seg in segments:
+                result.append(Sentence(
+                    start=math.floor(seg.start * 1000),
+                    end=math.floor(seg.end * 1000),
+                    text=seg.text.strip(),
                 ))
-
-        if len(words) == 0:
-            raise ValueError("No words found in the audio")
-
-        sentences: list[Segment] = []
-        cur_sentence: list[Segment] = []
-        for word in words:
-            cur_sentence.append(word)
-            if word.text.strip().endswith(('.', '?', '!')):
-                sentences.append(merge_segments(cur_sentence))
-                cur_sentence = []
-
-        return sentences
+            return result
 
 
-def merge_segments(segments: list[Segment]) -> Segment:
-    return Segment(
+def merge_segments(segments: list[Word]) -> Sentence:
+    return Sentence(
         start=segments[0].start,
         end=segments[-1].end,
         text="".join([seg.text for seg in segments]).strip()
     )
+
+
+def split_by_word(segments: Iterable[Segment]) -> list[Sentence]:
+    words = []
+    for seg in segments:
+        for idx, word in enumerate(seg.words):
+            words.append(Word(
+                start=math.floor(word.start * 1000),
+                end=math.floor(word.end * 1000),
+                text=word.word,
+                is_first=idx == 0,
+                is_last=idx == len(seg.words) - 1,
+            ))
+
+    if len(words) == 0:
+        raise ValueError("No words found in the audio")
+
+    sentences: list[Sentence] = []
+    cur_sentence: list[Word] = []
+    for word in words:
+        if word.is_first and len(word.text) > 0 and word.text[0].isupper():
+            if len(cur_sentence) > 0:
+                sentences.append(merge_segments(cur_sentence))
+                cur_sentence = []
+        cur_sentence.append(word)
+        if word.text.strip().endswith(('.', '?', '!')):
+            sentences.append(merge_segments(cur_sentence))
+            cur_sentence = []
+
+    return sentences
+

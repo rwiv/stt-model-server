@@ -1,21 +1,21 @@
-from stt.model.model import Segment
+from stt.model.model import Sentence
 
 
-def to_srt_chunk_string(seg: Segment, num: int) -> str:
+def to_srt_chunk_string(seg: Sentence, num: int) -> str:
     result = f"{num}\n"
     result += f"{to_vtt_time_string(seg.start)} --> {to_vtt_time_string(seg.end)}\n"
     result += f"{seg.text}\n"
     return result
 
 
-def to_srt_string(chunks: list[Segment]):
+def to_srt_string(chunks: list[Sentence]):
     srt_str = ""
     for idx, chunk in enumerate(chunks):
         srt_str += f"{to_srt_chunk_string(chunk, idx + 1)}\n"
     return srt_str
 
 
-def to_vtt_string(chunks: list[Segment]):
+def to_vtt_string(chunks: list[Sentence]):
     return "WEBVTT\n\n" + to_srt_string(chunks)
 
 
