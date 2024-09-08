@@ -1,6 +1,6 @@
 services:
   streaming-server:
-    image: ghcr.io/rwiv/stt-model-server:latest
+    image: stt-model-server
     container_name: stt-model-server
     environment:
       PY_ENV: prod
