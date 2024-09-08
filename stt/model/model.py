@@ -7,17 +7,15 @@ from numpy import ndarray
 
 class Segment(TypedDict):
     id: int
-    start: float
-    end: float
+    start: int
+    end: int
     text: str
 
 
 class SttModel:
-    def __init__(self, model_name: str):
+    def __init__(self, model_type: str, compute_type: str):
         device = "cuda"
-        # compute_type = "float16"  # change to "int8" if low on GPU mem (may reduce accuracy)
-        compute_type = "int8"
-        self.model = WhisperModel(model_name, device=device, compute_type=compute_type)
+        self.model = WhisperModel(model_type, device=device, compute_type=compute_type)
         print("whisper model load complete")
 
     def transcribe(self, file: str | BinaryIO | ndarray) -> list[Segment]:

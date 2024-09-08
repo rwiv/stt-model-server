@@ -1,11 +1,13 @@
 import time
+
+from stt.env.env import get_env
 from stt.model.model import SttModel, Segment
 from fastapi import APIRouter, UploadFile
 
 router = APIRouter(prefix="/api/trans")
 
-model_name = "large-v3"
-model = SttModel(model_name)
+env = get_env()
+model = SttModel(env.model_type, env.compute_type)
 
 
 @router.post("/")

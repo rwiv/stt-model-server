@@ -1,11 +1,14 @@
-FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.6.1-cudnn-runtime-ubuntu22.04
 
-WORKDIR /usr/src/app
-COPY . .
+WORKDIR /app
+COPY requirements.txt requirements.txt
+COPY main.py main.py
+COPY stt stt
 
 RUN apt-get update
-RUN apt-get install python3 python3-venv -y
+RUN apt-get install python3 python3-pip -y
 
-RUN python3 -m venv .venv
-RUN .venv/bin/pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu121
-RUN .venv/bin/pip install -r requirements.txt
+RUN pip install torch==2.4.1 --index-url https://download.pytorch.org/whl/cu124
+RUN pip install -r requirements.txt
+
+ENTRYPOINT ["python", "-u", "main.py"]
