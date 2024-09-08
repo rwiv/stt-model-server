@@ -3,13 +3,13 @@ import os.path
 from stt.env.env import get_env
 from stt.model.model import SttModel
 from stt.sbt.vtt import to_vtt_string
+from stt.utils.logger import log
 
 
 def run():
-    print("Starting job")
+    log.info("Starting job")
     env = get_env()
     model = SttModel(env.model_type, env.compute_type)
-    print("Model loaded")
 
     os.makedirs(env.dst_path, exist_ok=True)
     for filename in os.listdir(env.src_path):
@@ -21,4 +21,4 @@ def run():
 
         with open(out_path, "w") as f:
             f.write(vtt)
-        print(f"Generated {out_path}")
+        log.info(f"Generated {out_path}")

@@ -4,10 +4,10 @@ services:
     container_name: stt-model-server
     environment:
       PY_ENV: prod
+      MODEL_SIZE: base
+      MODEL_COMPUTE_TYPE: int8
       APP_PORT: "8080"
       APP_HOST: 0.0.0.0
-      APP_MODEL_TYPE: base
-      APP_COMPUTE_TYPE: int8
       APP_SRC_PATH: /mnt/src
       APP_DST_PATH: /mnt/out
     volumes:
