@@ -8,11 +8,10 @@ services:
       APP_HOST: 0.0.0.0
       APP_MODEL_TYPE: large-v3
       APP_COMPUTE_TYPE: int8
-      APP_SRC_PATH: /mnt/src
-      APP_DST_PATH: /mnt/out
+      APP_SRC_PATH: /mnt/volume/src
+      APP_DST_PATH: /mnt/volume/out
     volumes:
-      - /mnt/nas/stt/src:/mnt/src
-      - /mnt/nas/stt/out:/mnt/out
+      - /mnt/nas/stt:/mnt/volume
     deploy:
       resources:
         reservations:
