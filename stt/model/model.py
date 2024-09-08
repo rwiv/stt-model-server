@@ -80,7 +80,7 @@ def split_by_word(segments: Iterable[Segment]) -> list[Sentence]:
     sentences: list[Sentence] = []
     cur_sentence: list[Word] = []
     for word in words:
-        if word.is_first and len(word.text) > 0 and word.text[0].isupper():
+        if word.is_first and len(word.text.strip()) > 0 and word.text.strip()[0].isupper():
             if len(cur_sentence) > 0:
                 sentences.append(merge_segments(cur_sentence))
                 cur_sentence = []
