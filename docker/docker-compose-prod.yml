@@ -1,0 +1,22 @@
+services:
+  streaming-server:
+    image: ghcr.io/rwiv/stt-model-server:latest
+    container_name: stt-model-server
+    environment:
+      PY_ENV: prod
+      APP_PORT: "8080"
+      APP_HOST: 0.0.0.0
+      APP_MODEL_TYPE: large-v3
+      APP_COMPUTE_TYPE: int8
+      APP_SRC_PATH: /mnt/src
+      APP_DST_PATH: /mnt/out
+    volumes:
+      - /mnt/nas/stt/src:/mnt/src
+      - /mnt/nas/stt/out:/mnt/out
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

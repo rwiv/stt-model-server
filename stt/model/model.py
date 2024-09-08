@@ -1,11 +1,13 @@
 import math
-from typing import BinaryIO, TypedDict
+from dataclasses import dataclass
+from typing import BinaryIO
 from faster_whisper import WhisperModel
 from faster_whisper.transcribe import Segment as WhisperSegment
 from numpy import ndarray
 
 
-class Segment(TypedDict):
+@dataclass
+class Segment:
     id: int
     start: int
     end: int
@@ -25,9 +27,9 @@ class SttModel:
 
 
 def conv(segment: WhisperSegment) -> Segment:
-    return {
-        "id": segment.id,
-        "start": math.floor(segment.start * 1000),
-        "end": math.floor(segment.end * 1000),
-        "text": segment.text,
-    }
+    return Segment(
+        id=segment.id,
+        start=math.floor(segment.start * 1000),
+        end=math.floor(segment.end * 1000),
+        text=segment.text.strip(),
+    )

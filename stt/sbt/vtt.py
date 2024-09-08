@@ -1,33 +1,21 @@
-from dataclasses import dataclass
-
 from stt.model.model import Segment
 
 
-@dataclass
-class SbtChunk:
-    start: int
-    end: int
-    text: str
-
-    def to_srt_string(self, num: int) -> str:
-        result = f"{num}\n"
-        result += f"{to_vtt_time_string(self.start)} --> {to_vtt_time_string(self.end)}\n"
-        result += f"{self.text}\n"
-        return result
+def to_srt_chunk_string(seg: Segment, num: int) -> str:
+    result = f"{num}\n"
+    result += f"{to_vtt_time_string(seg.start)} --> {to_vtt_time_string(seg.end)}\n"
+    result += f"{seg.text}\n"
+    return result
 
 
-def from_segment(segment: Segment):
-    return SbtChunk(segment["start"], segment["end"], segment["text"].strip())
-
-
-def to_srt_string(chunks: list[SbtChunk]):
+def to_srt_string(chunks: list[Segment]):
     srt_str = ""
     for idx, chunk in enumerate(chunks):
-        srt_str += f"{chunk.to_srt_string(idx + 1)}\n"
+        srt_str += f"{to_srt_chunk_string(chunk, idx + 1)}\n"
     return srt_str
 
 
-def to_vtt_string(chunks: list[SbtChunk]):
+def to_vtt_string(chunks: list[Segment]):
     return "WEBVTT\n\n" + to_srt_string(chunks)
 
 
