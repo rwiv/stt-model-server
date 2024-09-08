@@ -19,7 +19,9 @@ def test_model():
     start = time.time()
     is_split = True
     # is_split = False
-    result = model.transcribe("../dev/src/test2.opus", is_split)
+    # file_path = "../dev/src/test1.mp3"
+    file_path = "../dev/src/test2.opus"
+    result = model.transcribe(file_path, is_split)
     print(f"{time.time() - start:.4f} sec")
 
     vtt = to_vtt_string(result)
