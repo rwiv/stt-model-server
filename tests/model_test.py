@@ -13,8 +13,8 @@ def test_model():
     # model_size = "large-v2"
     # model_size = "large-v3"
     compute_type = "int8"
-    term_time_ms = 700
-    # term_time_ms = 1000
+    term_time_ms = 500
+    # term_time_ms = 700
     relocation = True
     # relocation = False
     model = SttModel(model_size, compute_type, term_time_ms, relocation)

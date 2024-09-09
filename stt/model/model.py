@@ -36,12 +36,6 @@ class Word:
     def is_last_in_sentence(self):
         return self.text.strip().endswith(('.', '?', '!'))
 
-    # |--empty_time--|--pronunciation_time--|   (0ms)   |--empty_time--|--pronunciation_time--|
-    def is_start_word(self, term_time_ms: int) -> bool:
-        est_pronunciation_time = len(self.text.strip()) * per_char_ms
-        remaining_time = self.end - self.start - est_pronunciation_time
-        return remaining_time > term_time_ms
-
 
 class SttModel:
     def __init__(self, model_size: str, compute_type: str, term_time_ms: int, relocation: bool):
@@ -87,7 +81,7 @@ class SttModel:
         cur_sentence: list[Word] = []
         for idx, word in enumerate(words):
             if len(cur_sentence) > 0:
-                if word.is_start_word(self.term_time_ms) or word.first_is_upper():
+                if self._check_term_time(words, idx) or word.first_is_upper():
                     sentences.append(merge_segments(cur_sentence))
                     cur_sentence = []
             cur_sentence.append(word)
@@ -96,6 +90,14 @@ class SttModel:
                 cur_sentence = []
 
         return sentences
+
+    # |--empty_time--|--pronunciation_time--|   (0~?ms)   |--empty_time--|--pronunciation_time--|
+    def _check_term_time(self, words: list[Word], idx: int) -> bool:
+        if idx == 0:
+            return False
+        est_pronunciation_time = len(words[idx].text.strip()) * per_char_ms
+        remaining_time = words[idx].end - words[idx-1].end - est_pronunciation_time
+        return remaining_time > self.term_time_ms
 
 
 def merge_segments(segments: list[Word]) -> Sentence:
