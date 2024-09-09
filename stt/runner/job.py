@@ -7,9 +7,10 @@ from stt.utils.logger import log
 
 
 def run():
-    log.info("Starting job")
     env = get_env()
-    model = SttModel(env.model_type, env.compute_type)
+    log.info("Environment loaded", env.to_dict())
+
+    model = SttModel(env.model_type, env.compute_type, env.term_time_ms, env.relocation)
 
     os.makedirs(env.dst_path, exist_ok=True)
     for filename in os.listdir(env.src_path):

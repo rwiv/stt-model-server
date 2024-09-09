@@ -6,6 +6,8 @@ services:
       PY_ENV: prod
       MODEL_SIZE: base
       MODEL_COMPUTE_TYPE: int8
+      SEG_TERM_TIME_MS: "1000"
+      SEG_RELOCATION: "true"
       APP_PORT: "8080"
       APP_HOST: 0.0.0.0
       APP_SRC_PATH: /mnt/src

@@ -7,21 +7,23 @@ def test_model():
     print()
     start = time.time()
 
-    model_name = "base"
-    # model_name = "small"
-    # model_name = "medium"
-    # model_name = "large-v2"
-    # model_name = "large-v3"
+    model_size = "base"
+    # model_size = "small"
+    # model_size = "medium"
+    # model_size = "large-v2"
+    # model_size = "large-v3"
     compute_type = "int8"
-    model = SttModel(model_name, compute_type)
+    # term_time_ms = 100
+    term_time_ms = 1000
+    relocation = True
+    # relocation = False
+    model = SttModel(model_size, compute_type, term_time_ms, relocation)
     print(f"{time.time() - start:.4f} sec")
 
     start = time.time()
-    is_split = True
-    # is_split = False
     # file_path = "../dev/src/test1.mp3"
     file_path = "../dev/src/test2.opus"
-    result = model.transcribe(file_path, is_split)
+    result = model.transcribe(file_path)
     print(f"{time.time() - start:.4f} sec")
 
     vtt = to_vtt_string(result)
