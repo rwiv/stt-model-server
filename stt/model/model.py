@@ -10,7 +10,7 @@ from stt.utils.logger import log
 device = "cuda"
 beam_size = 5
 word_timestamps = True
-per_char_ms = 6
+per_char_ms = 60
 
 
 @dataclass
@@ -35,6 +35,12 @@ class Word:
 
     def is_last_in_sentence(self):
         return self.text.strip().endswith(('.', '?', '!'))
+
+    # |--empty_time--|--pronunciation_time--|   (0ms)   |--empty_time--|--pronunciation_time--|
+    def is_start_word(self, term_time_ms: int) -> bool:
+        est_pronunciation_time = len(self.text.strip()) * per_char_ms
+        remaining_time = self.end - self.start - est_pronunciation_time
+        return remaining_time > term_time_ms
 
 
 class SttModel:
@@ -80,22 +86,16 @@ class SttModel:
         sentences: list[Sentence] = []
         cur_sentence: list[Word] = []
         for idx, word in enumerate(words):
-            if len(cur_sentence) > 0 and word.first_is_upper():
-                sentences.append(merge_segments(cur_sentence))
-                cur_sentence = []
+            if len(cur_sentence) > 0:
+                if word.is_start_word(self.term_time_ms) or word.first_is_upper():
+                    sentences.append(merge_segments(cur_sentence))
+                    cur_sentence = []
             cur_sentence.append(word)
-            if word.is_last_in_sentence() or self._check_term_time(words, idx):
+            if word.is_last_in_sentence():
                 sentences.append(merge_segments(cur_sentence))
                 cur_sentence = []
 
         return sentences
-
-    def _check_term_time(self, words: list[Word], idx: int) -> bool:
-        if idx == len(words)-1:
-            return False
-        est_pronunciation_time = len(words[idx].text.strip()) * per_char_ms
-        remaining_time = words[idx+1].start - words[idx].start - est_pronunciation_time
-        return remaining_time > self.term_time_ms
 
 
 def merge_segments(segments: list[Word]) -> Sentence:
