@@ -9,7 +9,13 @@ from stt.utils.logger import log
 router = APIRouter(prefix="/api/trans")
 
 env = get_env()
-model = SttModel(env.model_type, env.compute_type, env.term_time_ms, env.relocation)
+model = SttModel(
+    model_size=env.model_size,
+    compute_type=env.compute_type,
+    term_time_ms=env.term_time_ms,
+    per_char_ms=env.per_char_ms,
+    relocation=env.relocation,
+)
 
 
 @router.post("/")

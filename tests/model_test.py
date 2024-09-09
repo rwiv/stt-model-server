@@ -17,7 +17,14 @@ def test_model():
     # term_time_ms = 700
     relocation = True
     # relocation = False
-    model = SttModel(model_size, compute_type, term_time_ms, relocation)
+    per_char_ms = 50
+    model = SttModel(
+        model_size=model_size,
+        compute_type=compute_type,
+        term_time_ms=term_time_ms,
+        per_char_ms=per_char_ms,
+        relocation=relocation,
+    )
     print(f"{time.time() - start:.4f} sec")
 
     start = time.time()

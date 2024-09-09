@@ -10,7 +10,6 @@ from stt.utils.logger import log
 device = "cuda"
 beam_size = 5
 word_timestamps = True
-per_char_ms = 60
 
 
 @dataclass
@@ -38,11 +37,15 @@ class Word:
 
 
 class SttModel:
-    def __init__(self, model_size: str, compute_type: str, term_time_ms: int, relocation: bool):
+    def __init__(
+            self, model_size: str, compute_type: str,
+            term_time_ms: int, per_char_ms: int, relocation: bool,
+    ):
         self.model = WhisperModel(
             model_size, device=device, compute_type=compute_type
         )
         self.term_time_ms = term_time_ms
+        self.per_char_ms = per_char_ms
         self.relocation = relocation
         log.info(f"Model loaded: {model_size}")
 
@@ -95,7 +98,7 @@ class SttModel:
     def _check_term_time(self, words: list[Word], idx: int) -> bool:
         if idx == 0:
             return False
-        est_pronunciation_time = len(words[idx].text.strip()) * per_char_ms
+        est_pronunciation_time = len(words[idx].text.strip()) * self.per_char_ms
         remaining_time = words[idx].end - words[idx-1].end - est_pronunciation_time
         return remaining_time > self.term_time_ms
 

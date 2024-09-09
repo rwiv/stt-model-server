@@ -6,7 +6,8 @@ services:
       PY_ENV: prod
       MODEL_SIZE: large-v3
       MODEL_COMPUTE_TYPE: int8
-      SEG_TERM_TIME_MS: "700"
+      SEG_TERM_TIME_MS: "500"
+      SEG_PER_CHAR_MS: "50"
       SEG_RELOCATION: "true"
       APP_PORT: "8080"
       APP_HOST: 0.0.0.0

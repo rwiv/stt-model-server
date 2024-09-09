@@ -10,7 +10,13 @@ def run():
     env = get_env()
     log.info("Environment loaded", env.to_dict())
 
-    model = SttModel(env.model_type, env.compute_type, env.term_time_ms, env.relocation)
+    model = SttModel(
+        model_size=env.model_size,
+        compute_type=env.compute_type,
+        term_time_ms=env.term_time_ms,
+        per_char_ms=env.per_char_ms,
+        relocation=env.relocation,
+    )
 
     os.makedirs(env.dst_path, exist_ok=True)
     for filename in os.listdir(env.src_path):
