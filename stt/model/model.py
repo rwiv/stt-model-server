@@ -10,6 +10,7 @@ from stt.utils.logger import log
 device = "cuda"
 beam_size = 5
 word_timestamps = True
+per_char_ms = 6
 
 
 @dataclass
@@ -92,8 +93,9 @@ class SttModel:
     def _check_term_time(self, words: list[Word], idx: int) -> bool:
         if idx == len(words)-1:
             return False
-        rest_time = words[idx+1].start - words[idx].start
-        return rest_time > self.term_time_ms
+        est_pronunciation_time = len(words[idx].text.strip()) * per_char_ms
+        remaining_time = words[idx+1].start - words[idx].start - est_pronunciation_time
+        return remaining_time > self.term_time_ms
 
 
 def merge_segments(segments: list[Word]) -> Sentence:
