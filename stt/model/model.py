@@ -92,7 +92,7 @@ class SttModel:
     def _check_term_time(self, words: list[Word], idx: int) -> bool:
         if idx == len(words)-1:
             return False
-        rest_time = words[idx+1].start - words[idx].end
+        rest_time = words[idx+1].start - words[idx].start
         return rest_time > self.term_time_ms
 
 
@@ -102,5 +102,3 @@ def merge_segments(segments: list[Word]) -> Sentence:
         end=segments[-1].end,
         text="".join([seg.text for seg in segments]).strip()
     )
-
-

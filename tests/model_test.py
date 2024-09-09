@@ -13,7 +13,7 @@ def test_model():
     # model_size = "large-v2"
     # model_size = "large-v3"
     compute_type = "int8"
-    # term_time_ms = 100
+    # term_time_ms = 500
     term_time_ms = 1000
     relocation = True
     # relocation = False
