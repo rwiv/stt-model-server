@@ -14,7 +14,7 @@ services:
       APP_SRC_PATH: /mnt/volume/src
       APP_DST_PATH: /mnt/volume/out
     volumes:
-      - /mnt/nas/stt:/mnt/volume
+      - /volume1/nfs_main/stt:/mnt/volume
     deploy:
       resources:
         reservations:
